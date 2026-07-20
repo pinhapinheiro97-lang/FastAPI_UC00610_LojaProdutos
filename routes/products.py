@@ -42,6 +42,10 @@ async def get_product_by_caracteristicas(
     ):
         return product_service.show_product_by_feature(nome, valor)
 
+# aumentar e/ou diminuir stock de um produto
+@router.patch('/produtos/{id}/stock')
+async def patch_product_stock(id: str, quantidade: int):
+    return product_service.change_product_stock(id, quantidade)     
 
 
 

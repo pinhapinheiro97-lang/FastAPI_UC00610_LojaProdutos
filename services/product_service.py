@@ -2,6 +2,8 @@
 
 from database import products
 from model.product_model import Product
+from bson import ObjectId
+
 
 
 # todos os produtos
@@ -73,4 +75,37 @@ def show_product_by_feature(nome: str, valor: str | None = None):
 
     return products_list
     
+
+# Alterar stock de produto
+def change_product_stock(id: str, quantidade: int):
+    
+    #Converter objectid em string
+    id_obj=ObjectId(id)
+
+    product = products.find_one({"_id": id_obj})
+
+    if product is None:
+        return {"erro": "Produto não encontrado"}
+    
+    stock_atual = product['stock']
+
+    new_stock = stock_atual + quantidade
+
+    if new_stock < 0:
+        return {"erro": "O stock não pode ficar negativo"}
+
+    products.update_one({"_id": id_obj},
+                        {"$set": {"stock": new_stock}})
+    
+    return {
+        "message": "Stock atualizado com sucesso",
+        "stock_anterior": stock_atual,
+        "stock_atual": new_stock
+    }
+
+
+
+
+
+
 
